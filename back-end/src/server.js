@@ -1,12 +1,6 @@
 import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
 
-const articleInfo = [
-  { name: "learn-node", upvotes: 0, comments: [] },
-  { name: "learn-react", upvotes: 0, comments: [] },
-  { name: "mongodb", upvotes: 0, comments: [] },
-];
-
 const app = express();
 
 app.use(express.json());
