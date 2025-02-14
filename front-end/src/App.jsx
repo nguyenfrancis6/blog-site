@@ -2,7 +2,7 @@ import './App.css'
 import Layout from './Layout';
 import AboutPage from './pages/AboutPage';
 import ArticlePage from './pages/ArticlePage';
-import ArticlesList from './pages/ArticlesList';
+import ArticlesListPage from './pages/ArticlesListPage';
 import HomePage from './pages/HomePage'
 import {
   createBrowserRouter, 
@@ -23,7 +23,7 @@ const routes =
     }, 
     {
       path: '/articles',
-      element: <ArticlesList />
+      element: <ArticlesListPage />
     }, 
     {
       path: '/articles/:name',
