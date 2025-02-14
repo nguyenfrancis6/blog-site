@@ -1,16 +1,13 @@
 import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
-import admin from 'firebase-admin';
-import fs from 'fs';
+import admin from "firebase-admin";
+import fs from "fs";
 
-const credentials = JSON.parse(
-  fs.readFileSync('./credentials.json')
-)
+const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 
 admin.initializeApp({
-  credential: admin.credential.cert(credentials)
+  credential: admin.credential.cert(credentials),
 });
-
 
 const app = express();
 
@@ -42,7 +39,7 @@ app.get("/api/articles/:name", async (req, res) => {
   res.json(article);
 });
 
-app.use(async function(req, res, next) {
+app.use(async function (req, res, next) {
   const { authtoken } = req.headers;
   if (authtoken) {
     const user = await admin.auth().verifyIdToken(authtoken);
@@ -52,31 +49,50 @@ app.use(async function(req, res, next) {
   }
 
   next();
-})
+});
 
 app.post("/api/articles/:name/upvote", async (req, res) => {
-  const { name } = req.params
-  const updatedArticle = await db.collection('articles').findOneAndUpdate({name}, {
-    $inc: { upvotes: 1 }
-  }, {
-    returnDocument: "after", 
-  })
+  const { name } = req.params;
+  const { uid } = req.user;
 
-  res.json(updatedArticle)
+  const article = await db.collection("articles").findOne({ name });
+
+  const upvoteIds = article.upvoteIds || [];
+  const canUpvote = uid && !upvoteIds.include(uid);
+
+  if (canUpvote) {
+    const updatedArticle = await db.collection("articles").findOneAndUpdate(
+      { name },
+      {
+        $inc: { upvotes: 1 },
+        $push: { upvoteIds: uid },
+      },
+      {
+        returnDocument: "after",
+      }
+    );
+    res.json(updatedArticle);
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 app.post("/api/articles/:name/comments", async (req, res) => {
   const name = req.params.name; // get name from route
   const { postedBy, text } = req.body; // tested with postman
-  const newComment = { postedBy, text }
+  const newComment = { postedBy, text };
 
-  const updatedArticle = await db.collection('articles').findOneAndUpdate({ name }, {
-    $push: { comments: newComment}
-  }, {
-    returnDocument: 'after',
-  })
+  const updatedArticle = await db.collection("articles").findOneAndUpdate(
+    { name },
+    {
+      $push: { comments: newComment },
+    },
+    {
+      returnDocument: "after",
+    }
+  );
 
-  res.json(updatedArticle)
+  res.json(updatedArticle);
 });
 
 async function start() {
@@ -87,5 +103,3 @@ async function start() {
 }
 
 start();
-
-
