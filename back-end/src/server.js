@@ -21,7 +21,9 @@ app.use(express.json());
 let db;
 
 async function connectToDB() {
-  const uri = "mongodb://127.0.0.1:27017";
+  const uri = !process.env.MONGODB_USERNAME
+    ? "mongodb://127.0.0.1:27017"
+    : `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER}/?retryWrites=true&w=majority&appName=Cluster0`;
 
   const client = new MongoClient(uri, {
     serverApi: {
@@ -36,10 +38,10 @@ async function connectToDB() {
   db = client.db("react-full-stack-db");
 }
 
-app.use(express.static(path.join(__dirname, '../dist')))
+app.use(express.static(path.join(__dirname, "../dist")));
 
 app.get(/^(?!\/api).+/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, "../dist/index.html"));
 });
 
 app.get("/api/articles/:name", async (req, res) => {
@@ -105,7 +107,7 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   res.json(updatedArticle);
 });
 
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8000;
 
 async function start() {
   await connectToDB();
