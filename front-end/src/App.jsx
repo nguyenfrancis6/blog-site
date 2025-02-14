@@ -9,6 +9,8 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 import NotFoundPage from './pages/NotFoundPage';
+import LoginPage from './pages/LoginPage';
+import CreateAccountPage from './pages/CreateAccountPage';
 
 const routes = 
   [{
@@ -31,6 +33,13 @@ const routes =
       path: '/articles/:name',
       element: <ArticlePage />,
       loader: articleLoader,
+    }, {
+      path: '/login',
+      element: <LoginPage />
+    },
+    {
+      path: '/create-account',
+      element: <CreateAccountPage />
     }]
   }]
   
