@@ -2,6 +2,11 @@ import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import admin from "firebase-admin";
 import fs from "fs";
+import path from "path";
+
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 
@@ -31,6 +36,12 @@ async function connectToDB() {
   db = client.db("react-full-stack-db");
 }
 
+app.use(express.static(path.join(__dirname, '../dist')))
+
+app.get(/^(?!\/api).+/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 app.get("/api/articles/:name", async (req, res) => {
   const { name } = req.params;
 
@@ -48,7 +59,6 @@ app.use(async function (req, res, next) {
   } else {
     res.sendStatus(400);
   }
-
 });
 
 app.post("/api/articles/:name/upvote", async (req, res) => {
@@ -95,10 +105,12 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   res.json(updatedArticle);
 });
 
+const PORT = process.env.PORT || 8000
+
 async function start() {
   await connectToDB();
-  app.listen(8000, () => {
-    console.log("server is listening on port 8000");
+  app.listen(PORT, () => {
+    console.log("server is listening on port " + PORT);
   });
 }
 
