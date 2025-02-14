@@ -1,3 +1,5 @@
+// to shut down google cloud proj, go to billing and billing account management and disable on the project
+
 import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import admin from "firebase-admin";
