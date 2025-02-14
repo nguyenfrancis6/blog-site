@@ -2,7 +2,7 @@ import React from 'react'
 
 const CreateAccountPage = () => {
   return (
-    <div>CreateAccountPage</div>
+    <h1>Create Account</h1>
   )
 }
 
