@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const ArticleList = ({ articles }) => {
   return (
     <>
-      <h1>Articles</h1>
       {articles.map((a) => (
         <Link key={a.name} to={"/articles/" + a.name}>
           <h3>{a.title}</h3>

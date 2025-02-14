@@ -8,11 +8,13 @@ import {
   createBrowserRouter, 
   RouterProvider,
 } from 'react-router-dom'
+import NotFoundPage from './pages/NotFoundPage';
 
 const routes = 
   [{
     path: '/', 
     element: <Layout />,
+    errorElement: <NotFoundPage />,
     children: [{
       path: '/',
       element: <HomePage />
